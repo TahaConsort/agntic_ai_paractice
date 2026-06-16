@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { createDeepAgent } from "deepagents";
 import { ChatOpenAI } from "@langchain/openai";
+import { weatherTool } from "./tools/weatherTool.js"
+import { internetSearch } from "./tools/internetSearchTool.js";
 
 const openRouterModel = new ChatOpenAI({
   model: "nex-agi/nex-n2-pro:free",
@@ -12,8 +14,9 @@ const openRouterModel = new ChatOpenAI({
 
 const agent = createDeepAgent({
   model: openRouterModel,
+  tools: [weatherTool,internetSearch],
   // Keep the prompt here
-  systemPrompt: "Your strict task is to always say hello on every user query. Do not answer the question, only say hello.",
+  systemPrompt: "Check the tools and according to user query give the correct output by using tools give answer to the point not use extra or idle words",
 });
 
 const result = await agent.invoke({
@@ -21,7 +24,7 @@ const result = await agent.invoke({
     // REMOVED the system role message from here
     {
       role: "user",
-      content: "What is langgraph?",
+      content: "koorui 24e3 reviews in pakistan?",
     },
   ],
 });
