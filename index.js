@@ -1,11 +1,12 @@
 import "dotenv/config";
 import { createDeepAgent } from "deepagents";
 import { ChatOpenAI } from "@langchain/openai";
-import { weatherTool } from "./tools/weatherTool.js"
+import { weatherTool } from "./tools/weatherTool.js";
 import { internetSearch } from "./tools/internetSearchTool.js";
+import { getPdfText } from "./getTestFromPdf.js";
 
 const openRouterModel = new ChatOpenAI({
-  model: "nex-agi/nex-n2-pro:free",
+  model: "openai/gpt-oss-120b:free",
   apiKey: process.env.OPENROUTER_API_KEY,
   configuration: {
     baseURL: "https://openrouter.ai/api/v1",
@@ -14,17 +15,27 @@ const openRouterModel = new ChatOpenAI({
 
 const agent = createDeepAgent({
   model: openRouterModel,
-  tools: [weatherTool,internetSearch],
+  tools: [weatherTool, internetSearch],
   // Keep the prompt here
-  systemPrompt: "Check the tools and according to user query give the correct output by using tools give answer to the point not use extra or idle words",
+  systemPrompt:
+    "Check the tools and according to user query give the correct output by using tools give answer to the point not use extra or idle words",
 });
+
+const pdfText = await getPdfText();
+
+console.log("PDF loaded");
+console.log(pdfText.slice(0, 500));
+console.log("Length:", pdfText.length);
 
 const result = await agent.invoke({
   messages: [
-    // REMOVED the system role message from here
+    {
+      role: "system",
+      content: `PDF Content:\n${pdfText}`,
+    },
     {
       role: "user",
-      content: "koorui 24e3 reviews in pakistan?",
+      content: "Give me summery of the pdf i attached ???",
     },
   ],
 });

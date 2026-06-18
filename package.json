@@ -16,6 +16,8 @@
     "@langchain/tavily": "^1.2.0",
     "deepagents": "^1.10.2",
     "dotenv": "^17.4.2",
-    "langchain": "^1.4.5"
+    "langchain": "^1.4.5",
+    "pdf-parse-fork": "^1.2.0",
+    "pdf-parser": "^1.0.5"
   }
 }
